@@ -1,0 +1,73 @@
+# ---------------------------
+# OpenSSH Server — Hardened (key-only)
+# ---------------------------
+
+# Загружаем *.conf, но тут всё уже задано; сниппеты не должны противоречить
+Include /etc/ssh/sshd_config.d/*.conf
+
+# Порт и бинды (при необходимости поменяйте IP и порт)
+Port 22
+AddressFamily inet
+# ListenAddress 0.0.0.0   # Раскомментируйте и укажите IP, если нужно слушать только конкретный адрес
+
+# Кто может входить (замените на вашего пользователя)
+AllowUsers USER # Измените на своего
+
+# Только ключи, никаких паролей/интерактива
+AuthenticationMethods publickey
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PermitEmptyPasswords no
+
+# Где лежат ключи пользователя
+AuthorizedKeysFile %h/.ssh/authorized_keys
+
+# Root не пускаем
+PermitRootLogin no
+
+# Отключаем лишние функции
+X11Forwarding no
+AllowAgentForwarding no
+AllowTcpForwarding no
+PermitTunnel no
+PermitUserEnvironment no
+Compression no
+
+# Сессии и таймауты
+LoginGraceTime 30
+ClientAliveInterval 300
+ClientAliveCountMax 2
+MaxAuthTries 4
+MaxSessions 2
+MaxStartups 10:30:60
+StrictModes yes
+
+# Алгоритмы (современный набор)
+HostKey /etc/ssh/ssh_host_ed25519_key
+# Только современные KEX/шифры/MAC'и
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes256-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com
+
+# Принимаемые алгоритмы подписи для user keys (без старого RSA-SHA1)
+PubkeyAcceptedAlgorithms sk-ssh-ed25519@openssh.com,ssh-ed25519
+
+# PAM только для account/session (лимиты, env, motd)
+UsePAM yes
+GSSAPIAuthentication no
+
+# Логи и баннер (опционально)
+SyslogFacility AUTHPRIV
+LogLevel VERBOSE
+Banner /etc/issue.net   # Раскомментируйте, если хотите показывать баннер
+PrintMotd no
+
+# SFTP — внутренний
+Subsystem sftp internal-sftp
+
+# DNS не трогаем — быстрее
+UseDNS no
+
+# Переключ по трафику/времени
+RekeyLimit 1G 1h

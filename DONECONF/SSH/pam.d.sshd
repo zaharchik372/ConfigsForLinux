@@ -1,0 +1,26 @@
+# PAM configuration for the OpenSSH server (key-only hardening)
+
+# Парольная аутентификация отключена на уровне sshd_config,
+# поэтому блокировки/фаиллок не нужны. Оставляем account/session хуки.
+
+# Auth stack (не задействуется при AuthenticationMethods publickey)
+@include common-auth
+
+# Запрет логина, если /etc/nologin
+account    required     pam_nologin.so
+
+# Account policy
+@include common-account
+
+# Session setup
+session    required     pam_loginuid.so
+session    required     pam_limits.so
+session    required     pam_env.so
+session    optional     pam_keyinit.so force revoke
+session    optional     pam_motd.so motd=/run/motd.dynamic
+session    optional     pam_motd.so noupdate
+session    optional     pam_mail.so standard noenv
+@include common-session
+
+# Password stack (не используется при key-only, но пусть остаётся консистентно с системой)
+@include common-password
