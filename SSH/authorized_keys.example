@@ -1,4 +1,4 @@
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGq9Dk... user@example
 # Пример публичного SSH-ключа.  
-# Скопируйте свой публичный ключ сюда или в ~/.ssh/authorized_keys на сервере.
+# Скопируйте свой публичный ключ в ~/.ssh/authorized_keys на сервере.
 # Смотри раздел "pre_setup"
