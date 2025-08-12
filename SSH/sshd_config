@@ -5,13 +5,13 @@
 # Загружаем *.conf, но тут всё уже задано; сниппеты не должны противоречить
 Include /etc/ssh/sshd_config.d/*.conf
 
-# Порт и бинды (при необходимости поменяй IP на свой)
-Port 2222
+# Порт и бинды (при необходимости поменяйте IP и порт)
+Port <PORT> # Укажите порт для работы (стандартный порт: 22)
 AddressFamily inet
-ListenAddress 192.168.0.53
+# ListenAddress 0.0.0.0   # Раскомментируйте и укажите IP, если нужно слушать только конкретный адрес
 
-# Кто может входить
-AllowUsers apel
+# Кто может входить (замените на вашего пользователя)
+AllowUsers USERNAME
 
 # Только ключи, никаких паролей/интерактива
 AuthenticationMethods publickey
@@ -21,12 +21,12 @@ KbdInteractiveAuthentication no
 PermitEmptyPasswords no
 
 # Где лежат ключи пользователя
-AuthorizedKeysFile .ssh/authorized_keys
+AuthorizedKeysFile %h/.ssh/authorized_keys
 
 # Root не пускаем
 PermitRootLogin no
 
-# Агрессивно режем «лишнее»
+# Отключаем лишние функции
 X11Forwarding no
 AllowAgentForwarding no
 AllowTcpForwarding no
@@ -57,10 +57,10 @@ PubkeyAcceptedAlgorithms sk-ssh-ed25519@openssh.com,ssh-ed25519
 UsePAM yes
 GSSAPIAuthentication no
 
-# Логи и баннер (по желанию)
+# Логи и баннер (опционально)
 SyslogFacility AUTHPRIV
 LogLevel VERBOSE
-Banner /etc/issue.net
+# Banner /etc/issue.net   # Раскомментируйте, если хотите показывать баннер
 PrintMotd no
 
 # SFTP — внутренний
@@ -69,5 +69,5 @@ Subsystem sftp internal-sftp
 # DNS не трогаем — быстрее
 UseDNS no
 
-# Реключ по трафику/времени
+# Переключ по трафику/времени
 RekeyLimit 1G 1h
